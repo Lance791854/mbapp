@@ -48,17 +48,50 @@ class LoginActivity : ComponentActivity() {
 
 @Composable
 fun LoginScreen(modifier: Modifier = Modifier) {
-    var username by remember { mutableStateOf(TextFieldValue("")) } // remember whats in the text fields if refresh
-    var password by remember { mutableStateOf(TextFieldValue("")) }
+    var username by remember { mutableStateOf(TextFieldValue("")) } // Remembers the username
+    var password by remember { mutableStateOf(("")) } //  Password stored in a string (Safer)
 
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment  = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(8.dp)
     ) {
         Text(text = "Login", style = MaterialTheme.typography.headlineMedium)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = username,
+            onValueChange = { username = it }, // Update text field for each new input
+            label = { Text("Username") },
+            singleLine = true
+        )
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Password") },
+            singleLine = true,
+            visualTransformation = PasswordVisualTransformation() // Hides password when entering
+
+        )
+    }
+}
+
+@Composable
+fun SignupScreen(modifier: Modifier = Modifier) {
+    var username by remember { mutableStateOf(TextFieldValue("")) } // Remembers the username
+    var password by remember { mutableStateOf(("")) } //  Password stored in a string (Safer)
+
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment  = Alignment.CenterHorizontally,
+        modifier = modifier
+            .fillMaxSize()
+            .padding(8.dp)
+    ) {
+        Text(text = "Sign Up", style = MaterialTheme.typography.headlineMedium)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -84,6 +117,9 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 @Composable
 fun LoginPreview() {
     UniBookAppTheme {
-        LoginScreen()
+        Column {
+//            LoginScreen()
+            SignupScreen()
+        }
     }
 }
