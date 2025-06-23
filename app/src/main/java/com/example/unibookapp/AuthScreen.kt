@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.compose.NavHost
@@ -103,10 +105,14 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = "Don't have an account? Sign Up",
-            modifier = Modifier.clickable { onSignupClick() }
-        )
+        Row {
+            Text("Don't have an account? ")
+            Text(
+                text = "Sign Up",
+                color = Color.Blue,
+                modifier = Modifier.clickable { onSignupClick() }
+            )
+        }
     }
 }
 
@@ -145,10 +151,14 @@ fun SignupScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = "Don't have an account? Sign Up",
-            modifier = Modifier.clickable { onLoginClick() }
-        )
+        Row {
+            Text("Already have an account? ")
+            Text(
+                text = "Log in",
+                color = Color.Blue,
+                modifier = Modifier.clickable { onLoginClick() }
+            )
+        }
     }
 }
 
