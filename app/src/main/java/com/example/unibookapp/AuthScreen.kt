@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,30 +25,53 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
 
+//class LoginActivity : ComponentActivity() {
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        enableEdgeToEdge()
+//        setContent {
+//            UniBookAppTheme {
+//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+//                    LoginScreen(
+//                        modifier = Modifier.padding(innerPadding)
+//                    )
+//                }
+//            }
+//        }
+//    }
+//}
 
+@Composable
+fun AuthScreen(modifier: Modifier = Modifier) {
+    val navController = rememberNavController()
 
-
-class LoginActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            UniBookAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginScreen(
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+    NavHost(
+        navController = navController,
+        startDestination = "login")
+    {
+        composable("login") {
+            LoginScreen(
+                onSignupClick = { navController.navigate("signup") }
+            )
+        }
+        composable("signup") {
+            SignupScreen(
+                onLoginClick = { navController.navigate("login") }
+            )
         }
     }
 }
 
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier) {
+fun LoginScreen(
+    modifier: Modifier = Modifier,
+    onSignupClick: () -> Unit) {
     var username by remember { mutableStateOf(TextFieldValue("")) } // Remembers the username
     var password by remember { mutableStateOf(("")) } //  Password stored in a string (Safer)
 
@@ -76,11 +100,20 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             visualTransformation = PasswordVisualTransformation() // Hides password when entering
 
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Don't have an account? Sign Up",
+            modifier = Modifier.clickable { onSignupClick() }
+        )
     }
 }
 
 @Composable
-fun SignupScreen(modifier: Modifier = Modifier) {
+fun SignupScreen(
+    modifier: Modifier = Modifier,
+    onLoginClick: () -> Unit) {
     var username by remember { mutableStateOf(TextFieldValue("")) } // Remembers the username
     var password by remember { mutableStateOf(("")) } //  Password stored in a string (Safer)
 
@@ -109,6 +142,13 @@ fun SignupScreen(modifier: Modifier = Modifier) {
             visualTransformation = PasswordVisualTransformation() // Hides password when entering
 
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Don't have an account? Sign Up",
+            modifier = Modifier.clickable { onLoginClick() }
+        )
     }
 }
 
@@ -118,8 +158,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
 fun LoginPreview() {
     UniBookAppTheme {
         Column {
-//            LoginScreen()
-//            SignupScreen()
+            AuthScreen()
         }
     }
 }

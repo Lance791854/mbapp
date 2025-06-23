@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             UniBookAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginScreen(
+                    AuthScreen(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
