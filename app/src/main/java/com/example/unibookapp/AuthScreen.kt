@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.unibookapp.ui.theme.UniBookAppTheme
 import androidx.compose.ui.unit.dp
-
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
@@ -30,6 +29,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.unibookapp.data.User
+import com.example.unibookapp.data.UserDao
+import kotlinx.coroutines.launch
 
 
 //class LoginActivity : ComponentActivity() {
@@ -49,7 +51,7 @@ import androidx.navigation.compose.rememberNavController
 //}
 
 @Composable
-fun AuthScreen(modifier: Modifier = Modifier) {
+fun AuthScreen(userDao: UserDao, modifier: Modifier = Modifier) {
     val navController = rememberNavController()
 
     NavHost(
@@ -58,11 +60,14 @@ fun AuthScreen(modifier: Modifier = Modifier) {
     {
         composable("login") {
             LoginScreen(
+                userDao = userDao,
                 onSignupClick = { navController.navigate("signup") }
+
             )
         }
         composable("signup") {
             SignupScreen(
+                userDao = userDao,
                 onLoginClick = { navController.navigate("login") }
             )
         }
@@ -72,10 +77,13 @@ fun AuthScreen(modifier: Modifier = Modifier) {
 
 @Composable
 fun LoginScreen(
+    userDao: UserDao,
     modifier: Modifier = Modifier,
     onSignupClick: () -> Unit) {
     var username by remember { mutableStateOf(TextFieldValue("")) } // Remembers the username
-    var password by remember { mutableStateOf(("")) } //  Password stored in a string (Safer)
+    var password by remember { mutableStateOf(TextFieldValue("")) }
+//    var password by remember { mutableStateOf(("")) } //  Password stored in a string (Safer)
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -99,8 +107,23 @@ fun LoginScreen(
             onValueChange = { password = it },
             label = { Text("Password") },
             singleLine = true,
-            visualTransformation = PasswordVisualTransformation() // Hides password when entering
+//            visualTransformation = PasswordVisualTransformation() // Hides password when entering
 
+        )
+
+        Text(
+            text = "Log in",
+            color = Color.Blue,
+            modifier = Modifier.clickable {
+                coroutineScope.launch {
+                    val user = userDao.authenticate(username.text, password.text)
+                    if (user != null) {
+                        println("Login successful!")
+                    } else {
+                        println("Invalid username or password")
+                    }
+                }
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -118,10 +141,13 @@ fun LoginScreen(
 
 @Composable
 fun SignupScreen(
+    userDao: UserDao,
     modifier: Modifier = Modifier,
     onLoginClick: () -> Unit) {
     var username by remember { mutableStateOf(TextFieldValue("")) } // Remembers the username
-    var password by remember { mutableStateOf(("")) } //  Password stored in a string (Safer)
+    var password by remember { mutableStateOf(TextFieldValue("")) }
+//    var password by remember { mutableStateOf(("")) } //  Password stored in a string (Safer)
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -149,6 +175,17 @@ fun SignupScreen(
 
         )
 
+        Text(
+            text = "Sign Up",
+            color = Color.Blue,
+            modifier = Modifier.clickable {
+                coroutineScope.launch {
+                    userDao.insert(User(username.text, password.text))
+                    onLoginClick()
+                }
+            }
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Row {
@@ -168,7 +205,7 @@ fun SignupScreen(
 fun LoginPreview() {
     UniBookAppTheme {
         Column {
-            AuthScreen()
+//            AuthScreen()
         }
     }
 }

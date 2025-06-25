@@ -11,16 +11,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.unibookapp.data.UniBookDatabase
 import com.example.unibookapp.ui.theme.UniBookAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val db = UniBookDatabase.getDatabase(applicationContext)
+        val userDao = db.userDao()
+
         enableEdgeToEdge()
         setContent {
             UniBookAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     AuthScreen(
+                        userDao = userDao,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

@@ -20,6 +20,7 @@ abstract class UniBookDatabase : RoomDatabase() {
                     UniBookDatabase::class.java,
                     "unibook_database"
                 )
+                    .fallbackToDestructiveMigration()
                     .build()
                     .also { Instance = it }
             }
