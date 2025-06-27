@@ -1,5 +1,6 @@
 package com.example.unibookapp
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,11 +12,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.unibookapp.ui.theme.UniBookAppTheme
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 
 @Composable
 fun DashboardScreen(
-    modifier: Modifier = Modifier,
+    username: String,
+    onLogoutClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
@@ -24,7 +28,12 @@ fun DashboardScreen(
             .fillMaxSize()
             .padding(8.dp)
     ) {
-        Text(text = "Dashboard")
+        Text(text = "Hello $username")
+        Text(
+            text = "Logout",
+            color = Color.Blue,
+            modifier = Modifier.clickable { onLogoutClick() }
+        )
     }
 }
 
@@ -34,7 +43,7 @@ fun DashboardScreen(
 fun DashPreview() {
     UniBookAppTheme {
         Column {
-            DashboardScreen()
+//            DashboardScreen()
         }
     }
 }

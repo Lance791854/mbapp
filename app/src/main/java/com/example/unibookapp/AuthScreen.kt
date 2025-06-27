@@ -32,20 +32,24 @@ import androidx.navigation.compose.rememberNavController
 import com.example.unibookapp.data.User
 import com.example.unibookapp.data.UserDao
 import kotlinx.coroutines.launch
+import com.example.unibookapp.viewmodel.UserViewModel
 
 
 
 @Composable
-fun AuthScreen(userDao: UserDao, modifier: Modifier = Modifier) {
+fun AuthScreen(userDao: UserDao, userViewModel: UserViewModel, modifier: Modifier = Modifier) {
     val navController = rememberNavController()
+    val currentUser by userViewModel.currentUser.collectAsState()
+    val startDestination = if (currentUser != null) "dashboard" else "login"
 
     NavHost(
         navController = navController,
-        startDestination = "login"
+        startDestination = startDestination
     ) {
         composable("login") {
             LoginScreen(
                 userDao = userDao,
+                userViewModel = userViewModel,
                 onSignupClick = { navController.navigate("signup") },
                 onLoginSuccess = { navController.navigate("dashboard")}
             )
@@ -57,7 +61,15 @@ fun AuthScreen(userDao: UserDao, modifier: Modifier = Modifier) {
             )
         }
         composable("dashboard") {
-            DashboardScreen()
+            currentUser?. let { username ->
+                DashboardScreen(
+                    username = username,
+                    onLogoutClick = {
+                        userViewModel.logout()
+                        navController.navigate("login")
+                    }
+                )
+            }
         }
     }
 }
@@ -67,8 +79,9 @@ fun AuthScreen(userDao: UserDao, modifier: Modifier = Modifier) {
 fun LoginScreen(
     userDao: UserDao,
     modifier: Modifier = Modifier,
+    userViewModel: UserViewModel,
     onSignupClick: () -> Unit,
-    onLoginSuccess: () -> Unit
+    onLoginSuccess: (String) -> Unit
 ) {
     var username by remember { mutableStateOf(TextFieldValue("")) } // Remembers the username
     var password by remember { mutableStateOf(TextFieldValue("")) }
@@ -108,7 +121,8 @@ fun LoginScreen(
                     val user = userDao.authenticate(username.text, password.text)
                     if (user != null) {
                         println("Login successful!")
-                        onLoginSuccess()
+                        userViewModel.login(username.text)
+                        onLoginSuccess(username.text)
                     } else {
                         println("Invalid username or password")
                     }
