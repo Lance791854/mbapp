@@ -34,21 +34,6 @@ import com.example.unibookapp.data.UserDao
 import kotlinx.coroutines.launch
 
 
-//class LoginActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
-//        setContent {
-//            UniBookAppTheme {
-//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-//                    LoginScreen(
-//                        modifier = Modifier.padding(innerPadding)
-//                    )
-//                }
-//            }
-//        }
-//    }
-//}
 
 @Composable
 fun AuthScreen(userDao: UserDao, modifier: Modifier = Modifier) {
@@ -56,13 +41,13 @@ fun AuthScreen(userDao: UserDao, modifier: Modifier = Modifier) {
 
     NavHost(
         navController = navController,
-        startDestination = "login")
-    {
+        startDestination = "login"
+    ) {
         composable("login") {
             LoginScreen(
                 userDao = userDao,
-                onSignupClick = { navController.navigate("signup") }
-
+                onSignupClick = { navController.navigate("signup") },
+                onLoginSuccess = { navController.navigate("dashboard")}
             )
         }
         composable("signup") {
@@ -70,6 +55,9 @@ fun AuthScreen(userDao: UserDao, modifier: Modifier = Modifier) {
                 userDao = userDao,
                 onLoginClick = { navController.navigate("login") }
             )
+        }
+        composable("dashboard") {
+            DashboardScreen()
         }
     }
 }
@@ -79,10 +67,11 @@ fun AuthScreen(userDao: UserDao, modifier: Modifier = Modifier) {
 fun LoginScreen(
     userDao: UserDao,
     modifier: Modifier = Modifier,
-    onSignupClick: () -> Unit) {
+    onSignupClick: () -> Unit,
+    onLoginSuccess: () -> Unit
+) {
     var username by remember { mutableStateOf(TextFieldValue("")) } // Remembers the username
     var password by remember { mutableStateOf(TextFieldValue("")) }
-//    var password by remember { mutableStateOf(("")) } //  Password stored in a string (Safer)
     val coroutineScope = rememberCoroutineScope()
 
     Column(
@@ -107,7 +96,7 @@ fun LoginScreen(
             onValueChange = { password = it },
             label = { Text("Password") },
             singleLine = true,
-//            visualTransformation = PasswordVisualTransformation() // Hides password when entering
+            visualTransformation = PasswordVisualTransformation() // Hides password when entering
 
         )
 
@@ -119,6 +108,7 @@ fun LoginScreen(
                     val user = userDao.authenticate(username.text, password.text)
                     if (user != null) {
                         println("Login successful!")
+                        onLoginSuccess()
                     } else {
                         println("Invalid username or password")
                     }
@@ -146,7 +136,6 @@ fun SignupScreen(
     onLoginClick: () -> Unit) {
     var username by remember { mutableStateOf(TextFieldValue("")) } // Remembers the username
     var password by remember { mutableStateOf(TextFieldValue("")) }
-//    var password by remember { mutableStateOf(("")) } //  Password stored in a string (Safer)
     val coroutineScope = rememberCoroutineScope()
 
     Column(
