@@ -207,8 +207,6 @@ fun SignupScreen(
 @Composable
 fun LoginPreview() {
     UniBookAppTheme {
-        Column {
-//            AuthScreen()
-        }
+//        AuthScreen()
     }
 }
