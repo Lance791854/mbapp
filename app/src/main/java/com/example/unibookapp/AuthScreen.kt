@@ -40,39 +40,51 @@ import com.example.unibookapp.viewmodel.UserViewModel
 fun AuthScreen(userDao: UserDao, userViewModel: UserViewModel, modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val currentUser by userViewModel.currentUser.collectAsState()
-    val startDestination = if (currentUser != null) "dashboard" else "login"
+    val startDestination = if (currentUser != null) Destination.DASHBOARD.route else "login"
 
-    NavHost(
-        navController = navController,
-        startDestination = startDestination
-    ) {
-        composable("login") {
-            LoginScreen(
-                userDao = userDao,
-                userViewModel = userViewModel,
-                onSignupClick = { navController.navigate("signup") },
-                onLoginSuccess = { navController.navigate("dashboard")}
-            )
+
+    Scaffold(
+        modifier = modifier,
+        bottomBar = {
+            if (currentUser != null) {
+                BottomNavBar(navController = navController)
+            }
         }
-        composable("signup") {
-            SignupScreen(
-                userDao = userDao,
-                onLoginClick = { navController.navigate("login") }
-            )
-        }
-        composable("dashboard") {
-            currentUser?. let { username ->
-                DashboardScreen(
-                    username = username,
-                    onLogoutClick = {
-                        userViewModel.logout()
-                        navController.navigate("login")
-                    }
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = startDestination,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable("login") {
+                LoginScreen(
+                    userDao = userDao,
+                    userViewModel = userViewModel,
+                    onSignupClick = { navController.navigate("signup") },
+                    onLoginSuccess = { navController.navigate(Destination.DASHBOARD.route)}
                 )
+            }
+            composable("signup") {
+                SignupScreen(
+                    userDao = userDao,
+                    onLoginClick = { navController.navigate("login") }
+                )
+            }
+            composable(Destination.DASHBOARD.route) {
+                currentUser?. let { username ->
+                    DashboardScreen(
+                        username = username,
+                        onLogoutClick = {
+                            userViewModel.logout()
+                            navController.navigate("login")
+                        }
+                    )
+                }
             }
         }
     }
 }
+
 
 
 @Composable
