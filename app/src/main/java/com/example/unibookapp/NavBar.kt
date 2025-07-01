@@ -14,10 +14,11 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.setValue
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+
 
 
 enum class Destination(
@@ -27,7 +28,7 @@ enum class Destination(
     val contentDescription: String
 ) {
     DASHBOARD("dashboard", "Dashboard", Icons.Default.Home, "Dashboard"),
-    LIBRARY("library", "Library", Icons.Default.List, "Library"),
+    LIBRARY("library", "Library", Icons.AutoMirrored.Filled.MenuBook, "Library"),
     SEARCH("search", "Search", Icons.Default.Search, "Book Search"),
     PROFILE("profile", "Profile", Icons.Default.Person, "Profile"),
     SETTINGS("settings", "Settings", Icons.Default.Settings, "Settings")
