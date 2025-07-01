@@ -4,20 +4,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
-import com.example.unibookapp.viewmodel.UserViewModel
 import androidx.compose.runtime.getValue
-import androidx.navigation.compose.composable
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 
 
 enum class Destination(
@@ -26,7 +26,11 @@ enum class Destination(
     val icon: ImageVector,
     val contentDescription: String
 ) {
-    DASHBOARD("dashboard", "Dashboard", Icons.Default.Home, "Dashboard")
+    DASHBOARD("dashboard", "Dashboard", Icons.Default.Home, "Dashboard"),
+    LIBRARY("library", "Library", Icons.Default.List, "Library"),
+    SEARCH("search", "Search", Icons.Default.Search, "Book Search"),
+    PROFILE("profile", "Profile", Icons.Default.Person, "Profile"),
+    SETTINGS("settings", "Settings", Icons.Default.Settings, "Settings")
 }
 
 

@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.example.unibookapp.ui.theme.UniBookAppTheme
 
 @Composable
-fun SettingScreen(
+fun SettingsScreen(
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -30,8 +30,8 @@ fun SettingScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun SettingPreview() {
+fun SettingsPreview() {
     UniBookAppTheme {
-        SettingScreen()
+        SettingsScreen()
     }
 }
