@@ -1,6 +1,7 @@
 package com.example.unibookapp
 
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
@@ -41,5 +42,28 @@ class AuthScreenTest {
         composeTestRule.onNodeWithText("Password").performTextInput("Qwerty123")
         composeTestRule.onNodeWithText("Log in").performClick()
 
+    }
+
+
+    @Test
+    fun testSignupFlow() {
+        composeTestRule.setContent {
+            UniBookAppTheme {
+                SignupScreen(
+                    userDao = object : UserDao {
+                        override suspend fun authenticate(username: String, password: String): User? {
+                            return null // Not used in signup
+                        }
+                        override suspend fun insert(user: User) {
+                            // Do nothing
+                        }
+                    },
+                    onLoginClick = { /* Do nothing */ }
+                )
+            }
+        }
+        composeTestRule.onNodeWithText("Username").performTextInput("NewUser123")
+        composeTestRule.onNodeWithText("Password").performTextInput("Pass123")
+        composeTestRule.onAllNodesWithText("Sign Up")[1].performClick()
     }
 }

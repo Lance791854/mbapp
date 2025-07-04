@@ -14,6 +14,9 @@
       <SelectionState runConfigName="testSimpleLoginFlow()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="testSimpleSignupFlow()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>
