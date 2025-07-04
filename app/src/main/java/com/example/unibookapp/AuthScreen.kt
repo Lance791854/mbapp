@@ -171,6 +171,7 @@ fun SignupScreen(
     onLoginClick: () -> Unit) {
     var username by remember { mutableStateOf(TextFieldValue("")) } // Remembers the username
     var password by remember { mutableStateOf(TextFieldValue("")) }
+    var errorMessage by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
 
     Column(
@@ -199,13 +200,29 @@ fun SignupScreen(
 
         )
 
+        if (errorMessage.isNotEmpty()) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+
         Text(
             text = "Sign Up",
             color = Color.Blue,
             modifier = Modifier.clickable {
-                coroutineScope.launch {
-                    userDao.insert(User(username.text, password.text))
-                    onLoginClick()
+                if (username.text.isEmpty() || password.text.isEmpty()) {
+                    errorMessage = "Username and password are required"
+                    // Disabled for development
+//                } else if (password.text.length < 8) {
+//                    errorMessage = "Password must be at least 8 characters long"
+                } else {
+                    errorMessage = ""
+                    coroutineScope.launch {
+                        userDao.insert(User(username.text, password.text))
+                        onLoginClick()
+                    }
                 }
             }
         )
