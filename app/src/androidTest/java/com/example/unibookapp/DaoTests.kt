@@ -11,7 +11,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
-class DaoTest {
+class DaoTests {
     private lateinit var database: UniBookDatabase
     private lateinit var userDao: UserDao
 
@@ -47,3 +47,6 @@ class DaoTest {
         }
     }
 }
+
+
+// For future tests insert with conflict, incorrect password and case sensitivity
