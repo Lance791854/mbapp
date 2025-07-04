@@ -218,10 +218,15 @@ fun SignupScreen(
 //                } else if (password.text.length < 8) {
 //                    errorMessage = "Password must be at least 8 characters long"
                 } else {
-                    errorMessage = ""
                     coroutineScope.launch {
-                        userDao.insert(User(username.text, password.text))
-                        onLoginClick()
+                        val existingUser = userDao.getUsername(username.text)
+                        if (existingUser != null) {
+                            errorMessage = "Username already exists."
+                        } else {
+                            errorMessage = ""
+                            userDao.insert(User(username.text, password.text))
+                            onLoginClick()
+                        }
                     }
                 }
             }
