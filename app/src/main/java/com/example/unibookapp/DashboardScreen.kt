@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 @Composable
 fun DashboardScreen(
     username: String,
-    onLogoutClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -29,11 +28,6 @@ fun DashboardScreen(
             .padding(8.dp)
     ) {
         Text(text = "Hello $username")
-        Text(
-            text = "Logout",
-            color = Color.Blue,
-            modifier = Modifier.clickable { onLogoutClick() }
-        )
     }
 }
 
@@ -44,7 +38,6 @@ fun DashPreview() {
     UniBookAppTheme {
         DashboardScreen(
             username = "hi",
-            onLogoutClick = {}
         )
     }
 }

@@ -69,11 +69,7 @@ fun AuthScreen(userDao: UserDao, userViewModel: UserViewModel, modifier: Modifie
             composable(Destination.DASHBOARD.route) {
                 currentUser?. let { username ->
                     DashboardScreen(
-                        username = username,
-                        onLogoutClick = {
-                            userViewModel.logout()
-                            navController.navigate("login")
-                        }
+                        username = username
                     )
                 }
             }
@@ -87,7 +83,12 @@ fun AuthScreen(userDao: UserDao, userViewModel: UserViewModel, modifier: Modifie
                 ProfileScreen()
             }
             composable(Destination.SETTINGS.route) {
-                SettingsScreen()
+                SettingsScreen(
+                    onLogoutClick = {
+                        userViewModel.logout()
+                        navController.navigate("login")
+                    }
+                )
             }
         }
     }
