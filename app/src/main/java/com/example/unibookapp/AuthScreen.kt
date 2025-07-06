@@ -25,7 +25,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.unibookapp.data.BookDao
 import com.example.unibookapp.data.User
+import com.example.unibookapp.data.UserBookDao
 import com.example.unibookapp.data.UserDao
 import kotlinx.coroutines.launch
 import com.example.unibookapp.viewmodel.UserViewModel
@@ -33,7 +35,12 @@ import com.example.unibookapp.viewmodel.UserViewModel
 
 
 @Composable
-fun AuthScreen(userDao: UserDao, userViewModel: UserViewModel, modifier: Modifier = Modifier) {
+fun AuthScreen(
+    userDao: UserDao,
+    bookDao: BookDao,
+    userBookDao: UserBookDao,
+    userViewModel: UserViewModel,
+    modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val currentUser by userViewModel.currentUser.collectAsState()
     val startDestination = if (currentUser != null) Destination.DASHBOARD.route else "login"
@@ -77,7 +84,13 @@ fun AuthScreen(userDao: UserDao, userViewModel: UserViewModel, modifier: Modifie
                 LibraryScreen()
             }
             composable(Destination.SEARCH.route) {
-                BookSearchScreen()
+                currentUser?. let { username ->
+                    BookSearchScreen(
+                        bookDao = bookDao,
+                        userBookDao = userBookDao,
+                        username = username
+                    )
+                }
             }
             composable(Destination.PROFILE.route) {
                 ProfileScreen()

@@ -57,8 +57,12 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.material.icons.extended)
 
+    implementation(libs.retrofit2.retrofit)
+    implementation(libs.retrofit2.converter.gson)
+
 
     testImplementation(libs.junit)
+
 
     androidTestImplementation("androidx.test:core:1.5.0")
     androidTestImplementation(libs.androidx.junit)

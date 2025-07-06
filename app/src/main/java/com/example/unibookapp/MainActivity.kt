@@ -17,8 +17,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val db = UniBookDatabase.getDatabase(applicationContext)
-        val userDao = db.userDao()
+        val database = UniBookDatabase.getDatabase(applicationContext)
+        val userDao = database.userDao()
+        val bookDao = database.bookDao()
+        val userBookDao = database.userBookDao()
 
         enableEdgeToEdge()
         setContent {
@@ -27,6 +29,8 @@ class MainActivity : ComponentActivity() {
                     val userViewModel: UserViewModel = viewModel()
                     AuthScreen(
                         userDao = userDao,
+                        bookDao = bookDao,
+                        userBookDao = userBookDao,
                         userViewModel = userViewModel,
                         modifier = Modifier.padding(innerPadding)
                     )
