@@ -60,9 +60,20 @@ fun BookSearchScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
-                        Text(text = bookItem.volumeInfo.title, style = MaterialTheme.typography.titleMedium)
-                        Text(text = bookItem.volumeInfo.authors?.joinToString() ?: "Unknown Author")
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = bookItem.volumeInfo.title,
+                            style = MaterialTheme.typography.titleMedium,
+                            maxLines = 2, // Max of 2 lines used when displaying
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis // Truncate if too long
+                        )
+                        Text(
+                            text = bookItem.volumeInfo.authors?.joinToString() ?: "Unknown Author",
+                            maxLines = 1,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+
                     }
                     Button(
                         onClick = {
@@ -81,7 +92,8 @@ fun BookSearchScreen(
                             // Link book to user
                             userBookDao.insert(UserBook(username = username, bookId = bookItem.id))
                             }
-                        }
+                        },
+                        modifier = Modifier.widthIn(min = 60.dp) // Set button width
                     ) {
                         Text("Add")
                     }
