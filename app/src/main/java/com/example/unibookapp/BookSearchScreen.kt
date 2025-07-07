@@ -22,6 +22,15 @@ fun BookSearchScreen(
     var searchResults by remember { mutableStateOf<List<BookItem>>(emptyList()) } // Holds list of books returned by api
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    var addedBookIds by remember { mutableStateOf(setOf<String>()) }
+
+    LaunchedEffect(username) {
+        coroutineScope.launch {
+            // Fetch all UserBook entries for the current user
+            val userBooks = userBookDao.getBooksByUser(username)
+            addedBookIds = userBooks.map { it.bookId }.toSet()
+        }
+    }
 
     // Main layout for screen
     Box(
@@ -77,9 +86,16 @@ fun BookSearchScreen(
                         Text(
                             text = bookItem.volumeInfo.authors?.joinToString() ?: "Unknown Author",
                             maxLines = 1,
-                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
-
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                        )
                     }
+                    if (addedBookIds.contains(bookItem.id)) {
+                        Text(
+                            text = "Added",
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(end = 16.dp)
+                        )
+                    } else {
                     Button(
                         onClick = {
                             coroutineScope.launch {
@@ -87,8 +103,7 @@ fun BookSearchScreen(
                             val book = Book(
                                 bookId = bookItem.id,
                                 title = bookItem.volumeInfo.title,
-                                author = bookItem.volumeInfo.authors?.firstOrNull()
-                                    ?: "Unknown Author",
+                                author = bookItem.volumeInfo.authors?.firstOrNull() ?: "Unknown Author",
                                 description = bookItem.volumeInfo.description,
                                 coverUrl = bookItem.volumeInfo.imageLinks?.thumbnail
                             )
@@ -96,6 +111,8 @@ fun BookSearchScreen(
                             bookDao.insert(book)
                             // Link book to user
                             userBookDao.insert(UserBook(username = username, bookId = bookItem.id))
+                            // Needed for remember if a book was added in memory
+                            addedBookIds = addedBookIds + bookItem.id
                             // Show snackbar confirmation when adding
                             snackbarHostState.showSnackbar("${book.title} added to library")
                             }
@@ -103,6 +120,7 @@ fun BookSearchScreen(
                         modifier = Modifier.widthIn(min = 60.dp) // Set button width
                     ) {
                         Text("Add")
+                    }
                     }
                     }
                 }

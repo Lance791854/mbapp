@@ -9,4 +9,7 @@ import androidx.room.Query
 interface UserBookDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(userBook: UserBook): Long
+
+    @Query("SELECT * FROM user_books WHERE username = :username")
+    suspend fun getBooksByUser(username: String): List<UserBook>
 }
