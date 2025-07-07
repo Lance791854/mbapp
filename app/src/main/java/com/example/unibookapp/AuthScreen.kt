@@ -81,7 +81,13 @@ fun AuthScreen(
                 }
             }
             composable(Destination.LIBRARY.route) {
-                LibraryScreen()
+                currentUser?. let { username ->
+                    LibraryScreen(
+                        bookDao = bookDao,
+                        userBookDao = userBookDao,
+                        username = username
+                    )
+                }
             }
             composable(Destination.SEARCH.route) {
                 currentUser?. let { username ->
