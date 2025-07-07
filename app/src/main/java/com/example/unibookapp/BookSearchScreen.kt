@@ -37,91 +37,98 @@ fun BookSearchScreen(
         modifier = modifier
             .fillMaxSize()
     ) {
-    Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        // Text input field for users search query
-        TextField(
-            value = searchQuery,
-            onValueChange = { searchQuery = it },
-            label = { Text("Search for books") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(
-            onClick = {
-                coroutineScope.launch {
-                    // Makes a asynchronous API call that to avoid blocking or overloading UI thread.
-                    val response = RetrofitInstanceGoogle.api.searchBooks(searchQuery)
-                    searchResults = response.body()?.items ?: emptyList()
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
+        Column(
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-            Text("Search")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        LazyColumn {
-            items(searchResults) { bookItem ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(
-                            text = bookItem.volumeInfo.title,
-                            style = MaterialTheme.typography.titleMedium,
-                            maxLines = 2, // Max of 2 lines used when displaying
-                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis // Truncate if too long
-                        )
-                        Text(
-                            text = bookItem.volumeInfo.authors?.joinToString() ?: "Unknown Author",
-                            maxLines = 1,
-                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
-                        )
+            // Text input field for users search query
+            TextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                label = { Text("Search for books") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        // Makes a asynchronous API call that to avoid blocking or overloading UI thread.
+                        val response = RetrofitInstanceGoogle.api.searchBooks(searchQuery)
+                        searchResults = response.body()?.items ?: emptyList()
                     }
-                    if (addedBookIds.contains(bookItem.id)) {
-                        Text(
-                            text = "Added",
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(end = 16.dp)
-                        )
-                    } else {
-                    Button(
-                        onClick = {
-                            coroutineScope.launch {
-                            // Convert BookItem to work in book database
-                            val book = Book(
-                                bookId = bookItem.id,
-                                title = bookItem.volumeInfo.title,
-                                author = bookItem.volumeInfo.authors?.firstOrNull() ?: "Unknown Author",
-                                description = bookItem.volumeInfo.description,
-                                coverUrl = bookItem.volumeInfo.imageLinks?.thumbnail
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Search")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            LazyColumn {
+                items(searchResults) { bookItem ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                text = bookItem.volumeInfo.title,
+                                style = MaterialTheme.typography.titleMedium,
+                                maxLines = 2, // Max of 2 lines used when displaying
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis // Truncate if too long
                             )
-                            // Save to database
-                            bookDao.insert(book)
-                            // Link book to user
-                            userBookDao.insert(UserBook(username = username, bookId = bookItem.id))
-                            // Needed for remember if a book was added in memory
-                            addedBookIds = addedBookIds + bookItem.id
-                            // Show snackbar confirmation when adding
-                            snackbarHostState.showSnackbar("${book.title} added to library")
+                            Text(
+                                text = bookItem.volumeInfo.authors?.joinToString()
+                                    ?: "Unknown Author",
+                                maxLines = 1,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                            )
+                        }
+                        if (addedBookIds.contains(bookItem.id)) {
+                            Text(
+                                text = "Added",
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(end = 16.dp)
+                            )
+                        } else {
+                            Button(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        // Convert BookItem to work in book database
+                                        val book = Book(
+                                            bookId = bookItem.id,
+                                            title = bookItem.volumeInfo.title,
+                                            author = bookItem.volumeInfo.authors?.firstOrNull()
+                                                ?: "Unknown Author",
+                                            description = bookItem.volumeInfo.description,
+                                            coverUrl = bookItem.volumeInfo.imageLinks?.thumbnail
+                                        )
+                                        // Save to database
+                                        bookDao.insert(book)
+                                        // Link book to user
+                                        userBookDao.insert(
+                                            UserBook(
+                                                username = username,
+                                                bookId = bookItem.id
+                                            )
+                                        )
+                                        // Needed for remember if a book was added in memory
+                                        addedBookIds = addedBookIds + bookItem.id
+                                        // Show snackbar confirmation when adding
+                                        snackbarHostState.showSnackbar("${book.title} added to library")
+                                    }
+                                },
+                                modifier = Modifier.widthIn(min = 60.dp) // Set button width
+                            ) {
+                                Text("Add")
                             }
-                        },
-                        modifier = Modifier.widthIn(min = 60.dp) // Set button width
-                    ) {
-                        Text("Add")
-                    }
-                    }
+                        }
                     }
                 }
             }
