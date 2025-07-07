@@ -8,4 +8,7 @@ import androidx.room.OnConflictStrategy
 interface BookDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(book: Book): Long
+
+    @Query("SELECT * FROM books WHERE bookId IN (:bookIds)")
+    suspend fun getBooksByIds(bookIds: List<String>): List<Book>
 }
