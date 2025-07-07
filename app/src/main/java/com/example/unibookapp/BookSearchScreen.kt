@@ -64,6 +64,27 @@ fun BookSearchScreen(
                         Text(text = bookItem.volumeInfo.title, style = MaterialTheme.typography.titleMedium)
                         Text(text = bookItem.volumeInfo.authors?.joinToString() ?: "Unknown Author")
                     }
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                            // Convert BookItem to work in book database
+                            val book = Book(
+                                bookId = bookItem.id,
+                                title = bookItem.volumeInfo.title,
+                                author = bookItem.volumeInfo.authors?.firstOrNull()
+                                    ?: "Unknown Author",
+                                description = null,
+                                coverUrl = null
+                            )
+                            // Save to database
+                            bookDao.insert(book)
+                            // Link book to user
+                            userBookDao.insert(UserBook(username = username, bookId = bookItem.id))
+                            }
+                        }
+                    ) {
+                        Text("Add")
+                    }
                 }
             }
         }
