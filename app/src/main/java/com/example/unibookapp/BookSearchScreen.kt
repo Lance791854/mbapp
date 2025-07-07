@@ -21,8 +21,13 @@ fun BookSearchScreen(
     var searchQuery by remember { mutableStateOf("") }
     var searchResults by remember { mutableStateOf<List<BookItem>>(emptyList()) } // Holds list of books returned by api
     val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     // Main layout for screen
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -84,21 +89,30 @@ fun BookSearchScreen(
                                 title = bookItem.volumeInfo.title,
                                 author = bookItem.volumeInfo.authors?.firstOrNull()
                                     ?: "Unknown Author",
-                                description = null,
-                                coverUrl = null
+                                description = bookItem.volumeInfo.description,
+                                coverUrl = bookItem.volumeInfo.imageLinks?.thumbnail
                             )
                             // Save to database
                             bookDao.insert(book)
                             // Link book to user
                             userBookDao.insert(UserBook(username = username, bookId = bookItem.id))
+                            // Show snackbar confirmation when adding
+                            snackbarHostState.showSnackbar("${book.title} added to library")
                             }
                         },
                         modifier = Modifier.widthIn(min = 60.dp) // Set button width
                     ) {
                         Text("Add")
                     }
+                    }
                 }
             }
         }
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
+
+
