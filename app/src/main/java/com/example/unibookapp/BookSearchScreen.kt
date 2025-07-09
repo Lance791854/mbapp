@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
 fun BookSearchScreen(
@@ -81,13 +82,13 @@ fun BookSearchScreen(
                                 text = bookItem.volumeInfo.title,
                                 style = MaterialTheme.typography.titleMedium,
                                 maxLines = 2, // Max of 2 lines used when displaying
-                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis // Truncate if too long
+                                overflow = TextOverflow.Ellipsis // Truncate if too long
                             )
                             Text(
                                 text = bookItem.volumeInfo.authors?.joinToString()
                                     ?: "Unknown Author",
                                 maxLines = 1,
-                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                         if (addedBookIds.contains(bookItem.id)) {
