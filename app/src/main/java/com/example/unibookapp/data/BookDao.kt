@@ -12,4 +12,7 @@ interface BookDao {
 
     @Query("SELECT * FROM books WHERE bookId IN (:bookIds)")
     suspend fun getBooksByIds(bookIds: List<String>): List<Book>
+
+    @Query("SELECT * FROM books WHERE bookId = :bookId LIMIT 1")
+    suspend fun getBookById(bookId: String): Book?
 }
