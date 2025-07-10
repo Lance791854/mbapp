@@ -33,6 +33,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.derivedStateOf
 
 
 @Composable
@@ -44,12 +46,27 @@ fun LibraryScreen(
 ) {
     var userBooks by remember { mutableStateOf<List<Book>>(emptyList()) }
     val coroutineScope = rememberCoroutineScope()
+    var searchQuery by remember { mutableStateOf("") }
 
-    LaunchedEffect(username) {
+        LaunchedEffect(username) {
         coroutineScope.launch {
             val userBookEntries = userBookDao.getBooksByUser(username)
             val bookIds = userBookEntries.map { it.bookId }
             userBooks = bookDao.getBooksByIds(bookIds)
+        }
+    }
+
+
+    val filteredBooks by remember(userBooks, searchQuery) {
+        derivedStateOf {
+            if (searchQuery.isBlank()) {
+                userBooks
+            } else {
+                userBooks.filter { book ->
+                    book.title.contains(searchQuery, ignoreCase = true) ||
+                            book.author.contains(searchQuery, ignoreCase = true)
+                }
+            }
         }
     }
 
@@ -64,10 +81,17 @@ fun LibraryScreen(
 
         Text(text = "My Books")
 
+        TextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            label = { Text("Search") },
+            singleLine = true
+        )
+
 
 
         LazyColumn {
-            items(userBooks) { book ->
+            items(filteredBooks) { book ->
 
                 Card(
                     modifier = Modifier
