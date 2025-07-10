@@ -48,7 +48,7 @@ fun LibraryScreen(
     val coroutineScope = rememberCoroutineScope()
     var searchQuery by remember { mutableStateOf("") }
 
-        LaunchedEffect(username) {
+    LaunchedEffect(username) {
         coroutineScope.launch {
             val userBookEntries = userBookDao.getBooksByUser(username)
             val bookIds = userBookEntries.map { it.bookId }
@@ -92,53 +92,59 @@ fun LibraryScreen(
 
 
 
-        LazyColumn {
-            items(filteredBooks) { book ->
+        if (filteredBooks.isEmpty() && searchQuery.isBlank()) {
+            Text(text = "Your library is empty")
+        } else if (filteredBooks.isEmpty() && searchQuery.isNotBlank()) {
+            Text(text = "No books under that search")
+        } else {
+            LazyColumn {
+                items(filteredBooks) { book ->
 
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(4.dp)
-                ) {
-
-                    Row(
+                    Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp)
+                            .padding(4.dp)
                     ) {
 
-                        AsyncImage(
-                            model = book.coverUrl,
-                            contentDescription = "Book Cover",
+                        Row(
                             modifier = Modifier
-                                .size(90.dp, 120.dp),
-                            contentScale = ContentScale.Crop,
-                            placeholder = painterResource(R.drawable.landscape_placeholder),
-                            error = painterResource(R.drawable.landscape_placeholder)
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
                                 .fillMaxWidth()
+                                .padding(8.dp)
                         ) {
 
-                            Text(
-                                text = book.title,
-                                style = MaterialTheme.typography.titleMedium,
-                                maxLines = 3,
-                                overflow = TextOverflow.Ellipsis
+                            AsyncImage(
+                                model = book.coverUrl,
+                                contentDescription = "Book Cover",
+                                modifier = Modifier
+                                    .size(90.dp, 120.dp),
+                                contentScale = ContentScale.Crop,
+                                placeholder = painterResource(R.drawable.landscape_placeholder),
+                                error = painterResource(R.drawable.landscape_placeholder)
                             )
-                            Spacer(modifier = Modifier.height(4.dp))
 
-                            Text(
-                                text = book.author,
-                                style = MaterialTheme.typography.bodySmall,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                            ) {
+
+                                Text(
+                                    text = book.title,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    maxLines = 3,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+
+                                Text(
+                                    text = book.author,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
                         }
                     }
                 }
