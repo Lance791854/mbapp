@@ -80,6 +80,7 @@ fun LibraryScreen(
     ) {
 
         Text(text = "My Books")
+        Spacer(modifier = Modifier.height(8.dp))
 
         TextField(
             value = searchQuery,
@@ -87,6 +88,7 @@ fun LibraryScreen(
             label = { Text("Search") },
             singleLine = true
         )
+        Spacer(modifier = Modifier.height(8.dp))
 
 
 
@@ -112,7 +114,7 @@ fun LibraryScreen(
                                 .size(90.dp, 120.dp),
                             contentScale = ContentScale.Crop,
                             placeholder = painterResource(R.drawable.landscape_placeholder),
-
+                            error = painterResource(R.drawable.landscape_placeholder)
                         )
 
                         Spacer(modifier = Modifier.width(8.dp))
