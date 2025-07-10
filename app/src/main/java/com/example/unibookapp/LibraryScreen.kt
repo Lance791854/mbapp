@@ -25,7 +25,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
+import coil.compose.AsyncImage
+import androidx.compose.foundation.layout.size
+
+
 
 
 @Composable
@@ -73,10 +79,22 @@ fun LibraryScreen(
                             .fillMaxWidth()
                             .padding(8.dp)
                     ) {
+
+                        AsyncImage(
+                            model = book.coverUrl,
+                            contentDescription = "image",
+                            modifier = Modifier
+                                .size(90.dp, 120.dp),
+                            contentScale = ContentScale.Crop,
+                            placeholder = painterResource(R.drawable.landscape_placeholder),
+
+                        )
+
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
+
                             Text(
                                 text = book.title,
                                 style = MaterialTheme.typography.titleMedium,
@@ -97,3 +115,4 @@ fun LibraryScreen(
         }
     }
 }
+
