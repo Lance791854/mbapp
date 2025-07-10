@@ -93,9 +93,23 @@ fun LibraryScreen(
 
 
         if (filteredBooks.isEmpty() && searchQuery.isBlank()) {
-            Text(text = "Your library is empty")
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "No books here yet!")
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Visit the 'Search' tab to add books to your library.")
+            }
         } else if (filteredBooks.isEmpty() && searchQuery.isNotBlank()) {
-            Text(text = "No books under that search")
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "No matches found for your search.")
+            }
         } else {
             LazyColumn {
                 items(filteredBooks) { book ->
