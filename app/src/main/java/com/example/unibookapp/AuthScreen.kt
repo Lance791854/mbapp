@@ -124,10 +124,7 @@ fun AuthScreen(
     }
 }
 
-@Composable
-fun BookDetailScreen(bookId: String, bookDao: BookDao, userBookDao: UserBookDao) {
-    TODO("Not yet implemented")
-}
+
 
 
 @Composable
