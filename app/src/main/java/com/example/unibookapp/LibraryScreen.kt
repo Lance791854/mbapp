@@ -3,8 +3,10 @@ package com.example.unibookapp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
@@ -30,8 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
 import androidx.compose.foundation.layout.size
-
-
+import androidx.compose.foundation.layout.width
 
 
 @Composable
@@ -82,7 +83,7 @@ fun LibraryScreen(
 
                         AsyncImage(
                             model = book.coverUrl,
-                            contentDescription = "image",
+                            contentDescription = "Book Cover",
                             modifier = Modifier
                                 .size(90.dp, 120.dp),
                             contentScale = ContentScale.Crop,
@@ -90,17 +91,21 @@ fun LibraryScreen(
 
                         )
 
+                        Spacer(modifier = Modifier.width(8.dp))
+
                         Column(
                             modifier = Modifier
+                                .weight(1f)
                                 .fillMaxWidth()
                         ) {
 
                             Text(
                                 text = book.title,
                                 style = MaterialTheme.typography.titleMedium,
-                                maxLines = 2,
+                                maxLines = 3,
                                 overflow = TextOverflow.Ellipsis
                             )
+                            Spacer(modifier = Modifier.height(4.dp))
 
                             Text(
                                 text = book.author,
