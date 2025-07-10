@@ -1,5 +1,6 @@
 package com.example.unibookapp
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,6 +43,7 @@ fun LibraryScreen(
     bookDao: BookDao,
     userBookDao: UserBookDao,
     username: String,
+    onBookClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var userBooks by remember { mutableStateOf<List<Book>>(emptyList()) }
@@ -118,6 +120,7 @@ fun LibraryScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(4.dp)
+                            .clickable { onBookClick(book.bookId) }
                     ) {
 
                         Row(

@@ -85,7 +85,18 @@ fun AuthScreen(
                     LibraryScreen(
                         bookDao = bookDao,
                         userBookDao = userBookDao,
-                        username = username
+                        username = username,
+                        onBookClick = { bookId -> navController.navigate("bookDetail/$bookId") }
+                    )
+                }
+            }
+            composable("bookDetail/{bookId}") { backStackEntry ->
+                val bookId = backStackEntry.arguments?.getString("bookId")
+                if (bookId != null) {
+                    BookDetailScreen(
+                        bookId = bookId,
+                        bookDao = bookDao,
+                        userBookDao = userBookDao
                     )
                 }
             }
@@ -113,6 +124,10 @@ fun AuthScreen(
     }
 }
 
+@Composable
+fun BookDetailScreen(bookId: String, bookDao: BookDao, userBookDao: UserBookDao) {
+    TODO("Not yet implemented")
+}
 
 
 @Composable
