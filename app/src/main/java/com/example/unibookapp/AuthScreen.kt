@@ -93,11 +93,14 @@ fun AuthScreen(
             composable("bookDetail/{bookId}") { backStackEntry ->
                 val bookId = backStackEntry.arguments?.getString("bookId")
                 if (bookId != null) {
-                    BookDetailScreen(
-                        bookId = bookId,
-                        bookDao = bookDao,
-                        userBookDao = userBookDao
-                    )
+                    currentUser?. let { username ->
+                        BookDetailScreen(
+                            bookId = bookId,
+                            bookDao = bookDao,
+                            userBookDao = userBookDao,
+                            username = username
+                        )
+                    }
                 }
             }
             composable(Destination.SEARCH.route) {
