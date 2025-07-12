@@ -98,7 +98,8 @@ fun AuthScreen(
                             bookId = bookId,
                             bookDao = bookDao,
                             userBookDao = userBookDao,
-                            username = username
+                            username = username,
+                            onBookRemoved = { navController.popBackStack() }
                         )
                     }
                 }

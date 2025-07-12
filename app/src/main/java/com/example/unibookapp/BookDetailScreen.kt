@@ -49,6 +49,7 @@ fun BookDetailScreen(
     bookDao: BookDao,
     userBookDao: UserBookDao,
     username: String,
+    onBookRemoved: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var book by remember { mutableStateOf<Book?>(null) }
@@ -104,6 +105,7 @@ fun BookDetailScreen(
                                 UserBook(username = username, bookId = myBook.bookId)
                             userBookDao.delete(userBookToDelete)
                             snackbarHostState.showSnackbar("${myBook.title} removed from library")
+                            onBookRemoved()
                         }
                     },
                     modifier = Modifier.fillMaxWidth()
