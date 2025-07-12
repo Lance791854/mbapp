@@ -69,7 +69,11 @@ fun BookDetailScreen(
                 error = painterResource(R.drawable.landscape_placeholder)
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = myBook.title, style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = myBook.title,
+                style = MaterialTheme.typography.headlineMedium,
+                textAlign = TextAlign.Center
+            )
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "Author: ${myBook.author}", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
