@@ -21,6 +21,7 @@ class MainActivity : ComponentActivity() {
         val userDao = database.userDao()
         val bookDao = database.bookDao()
         val userBookDao = database.userBookDao()
+        val reviewDao = database.reviewDao()
 
         enableEdgeToEdge()
         setContent {
@@ -32,6 +33,7 @@ class MainActivity : ComponentActivity() {
                         bookDao = bookDao,
                         userBookDao = userBookDao,
                         userViewModel = userViewModel,
+                        reviewDao = reviewDao,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

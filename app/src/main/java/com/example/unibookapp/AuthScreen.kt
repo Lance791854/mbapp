@@ -26,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.unibookapp.data.BookDao
+import com.example.unibookapp.data.ReviewDao
 import com.example.unibookapp.data.User
 import com.example.unibookapp.data.UserBookDao
 import com.example.unibookapp.data.UserDao
@@ -39,6 +40,7 @@ fun AuthScreen(
     userDao: UserDao,
     bookDao: BookDao,
     userBookDao: UserBookDao,
+    reviewDao: ReviewDao,
     userViewModel: UserViewModel,
     modifier: Modifier = Modifier) {
     val navController = rememberNavController()
@@ -98,6 +100,7 @@ fun AuthScreen(
                             bookId = bookId,
                             bookDao = bookDao,
                             userBookDao = userBookDao,
+                            reviewDao = reviewDao,
                             username = username,
                             onBookRemoved = { navController.popBackStack() }
                         )
