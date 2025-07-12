@@ -54,7 +54,7 @@ fun BookDetailScreen(
 ) {
     var book by remember { mutableStateOf<Book?>(null) }
     val coroutineScope = rememberCoroutineScope()
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(true) }
     val snackbarHostState = remember { SnackbarHostState() }
 
 
