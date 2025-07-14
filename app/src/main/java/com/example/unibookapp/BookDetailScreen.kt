@@ -1,6 +1,7 @@
 package com.example.unibookapp
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,6 +43,12 @@ import androidx.compose.material3.SnackbarHostState
 import com.example.unibookapp.data.Review
 import com.example.unibookapp.data.ReviewDao
 
+
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material.icons.filled.StarHalf
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 
 
 @Composable
@@ -124,6 +131,17 @@ fun BookDetailScreen(
                     Text(text = "You haven't reviewed this yet")
                 }
 
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("Your Rating")
+                RatingBar(
+                    rating = currentRating.toFloatOrNull() ?: 0f,
+                    onRatingChanged = { newRating ->
+                        currentRating = newRating.toString()
+                    }
+                )
+
+
+
 
 
                 Button(
@@ -178,5 +196,47 @@ fun BookDetailScreen(
 }
 
 
+@Composable
+fun RatingBar(
+    modifier: Modifier = Modifier,
+    rating: Float,
+    onRatingChanged: (Float) -> Unit
+) {
+    Row(modifier = modifier) {
+        for (i in 1..5) {
+            val isFullStar = rating >= i
+            val isHalfStar = rating >= i - 0.5f && !isFullStar
+
+            val icon = when {
+                isFullStar -> Icons.Default.Star
+                isHalfStar -> Icons.Default.StarHalf
+                else -> Icons.Default.StarBorder
+            }
+
+            Icon(
+                imageVector = icon,
+                contentDescription = "Rating Star",
+                modifier = Modifier
+                    .size(48.dp)
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = { offset ->
+                                // Half star is tapped on left side, full star if tapped on right
+                                val starRating = if (offset.x < size.width / 2) {
+                                    i - 0.5f
+                                } else {
+                                    i.toFloat()
+                                }
+                                onRatingChanged(starRating)
+                            }
+                        )
+                    }
+                    .padding(4.dp),
+                // Didn't choose yellow as it caused readability issues
+                tint = if (isFullStar || isHalfStar) MaterialTheme.colorScheme.primary else Color.Gray
+            )
+        }
+    }
+}
 
 
