@@ -39,7 +39,8 @@ import kotlinx.coroutines.launch
 import com.example.unibookapp.data.UserBook
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-
+import com.example.unibookapp.data.Review
+import com.example.unibookapp.data.ReviewDao
 
 
 
@@ -48,6 +49,7 @@ fun BookDetailScreen(
     bookId: String,
     bookDao: BookDao,
     userBookDao: UserBookDao,
+    reviewDao: ReviewDao,
     username: String,
     onBookRemoved: () -> Unit,
     modifier: Modifier = Modifier
@@ -57,10 +59,19 @@ fun BookDetailScreen(
     var expanded by remember { mutableStateOf(true) }
     val snackbarHostState = remember { SnackbarHostState() }
 
+    var userReview by remember { mutableStateOf<Review?>(null) }
+    var currentRating by remember { mutableStateOf("") }
+    var currentReviewText by remember { mutableStateOf("") }
+
 
     LaunchedEffect(bookId) {
         coroutineScope.launch {
             book = bookDao.getBookById(bookId)
+            userReview = reviewDao.getReviewByUserAndBook(bookId, username)
+            userReview?.let {
+                currentRating = it.rating.toString()
+                currentReviewText = it.reviewtext?: ""
+            }
         }
     }
 
@@ -97,6 +108,23 @@ fun BookDetailScreen(
                     style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.height(8.dp))
+
+
+
+                userReview?.let { review ->
+                    Text(
+                        text = "${review.rating}"
+                    )
+                    review.reviewtext?.let { text ->
+                        Text(
+                            text = "your review"
+                        )
+                    }
+                } ?: run {
+                    Text(text = "You haven't reviewed this yet")
+                }
+
+
 
                 Button(
                     onClick = {
