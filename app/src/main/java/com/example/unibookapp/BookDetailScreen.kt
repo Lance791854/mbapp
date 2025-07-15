@@ -47,6 +47,7 @@ import com.example.unibookapp.data.ReviewDao
 
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 
@@ -118,18 +119,31 @@ fun BookDetailScreen(
 
 
 
-                userReview?.let { review ->
-                    Text(
-                        text = "${review.rating}"
-                    )
-                    review.reviewtext?.let { text ->
+                if (userReview?.reviewtext.isNullOrBlank()) {
+                    Text(text = "You haven't written a review yet.")
+                } else {
+                    Column(modifier = Modifier.fillMaxWidth()) {
                         Text(
-                            text = "your review"
+                            text = "Your Review:",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            text = userReview!!.reviewtext!!,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(top = 4.dp)
                         )
                     }
-                } ?: run {
-                    Text(text = "You haven't reviewed this yet")
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+
+                OutlinedTextField(
+                    value = currentReviewText,
+                    onValueChange = { currentReviewText = it },
+                    label = { Text("Write/update your review") },
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Text("Your Rating")
@@ -150,12 +164,13 @@ fun BookDetailScreen(
                             val ratingValue = currentRating.toFloatOrNull() ?: 0f
 
                             val reviewToSave = userReview?.copy(
-                                rating = ratingValue
+                                rating = ratingValue,
+                                reviewtext = currentReviewText
                             ) ?: Review(
                                 username = username,
                                 bookId = bookId,
                                 rating = ratingValue,
-                                reviewtext = ""
+                                reviewtext = currentReviewText
                             )
 
                             reviewDao.insert(reviewToSave)
