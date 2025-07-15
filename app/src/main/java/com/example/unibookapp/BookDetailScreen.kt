@@ -182,7 +182,7 @@ fun BookDetailScreen(
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Save Rating")
+                    Text("Save")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
