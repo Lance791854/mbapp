@@ -47,7 +47,6 @@ import com.example.unibookapp.data.ReviewDao
 
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
-import androidx.compose.material.icons.filled.StarHalf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 
@@ -140,6 +139,42 @@ fun BookDetailScreen(
                         currentRating = newRating.toString()
                     }
                 )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            // If no rating value = 0
+                            val ratingValue = currentRating.toFloatOrNull() ?: 0f
+
+                            val reviewToSave = userReview?.copy(
+                                rating = ratingValue
+                            ) ?: Review(
+                                username = username,
+                                bookId = bookId,
+                                rating = ratingValue,
+                                reviewtext = ""
+                            )
+
+                            reviewDao.insert(reviewToSave)
+
+                            // Refresh the userReview state to show the saved rating
+                            userReview = reviewDao.getReviewByUserAndBook(bookId, username)
+                            snackbarHostState.showSnackbar("Rating saved!")
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Save Rating")
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+
+
+
+
+
 
 
 
