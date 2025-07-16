@@ -43,8 +43,8 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import com.example.unibookapp.data.Review
 import com.example.unibookapp.data.ReviewDao
-
-
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.OutlinedTextField
@@ -78,7 +78,7 @@ fun BookDetailScreen(
             userReview = reviewDao.getReviewByUserAndBook(bookId, username)
             userReview?.let {
                 currentRating = it.rating.toString()
-                currentReviewText = it.reviewtext?: ""
+                currentReviewText = it.reviewtext ?: ""
             }
         }
     }
@@ -91,7 +91,8 @@ fun BookDetailScreen(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             book?.let { myBook ->
@@ -119,97 +120,6 @@ fun BookDetailScreen(
 
 
 
-                if (userReview?.reviewtext.isNullOrBlank()) {
-                    Text(text = "You haven't written a review yet.")
-                } else {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = "Your Review:",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        Text(
-                            text = userReview!!.reviewtext!!,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(top = 4.dp)
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-
-                OutlinedTextField(
-                    value = currentReviewText,
-                    onValueChange = { currentReviewText = it },
-                    label = { Text("Write/update your review") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-                Text("Your Rating")
-                RatingBar(
-                    rating = currentRating.toFloatOrNull() ?: 0f,
-                    onRatingChanged = { newRating ->
-                        currentRating = newRating.toString()
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            // If no rating value = 0
-                            val ratingValue = currentRating.toFloatOrNull() ?: 0f
-
-                            val reviewToSave = userReview?.copy(
-                                rating = ratingValue,
-                                reviewtext = currentReviewText
-                            ) ?: Review(
-                                username = username,
-                                bookId = bookId,
-                                rating = ratingValue,
-                                reviewtext = currentReviewText
-                            )
-
-                            reviewDao.insert(reviewToSave)
-
-                            // Refresh the userReview state to show the saved rating
-                            userReview = reviewDao.getReviewByUserAndBook(bookId, username)
-                            snackbarHostState.showSnackbar("Rating saved!")
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Save")
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-
-
-
-
-
-
-
-
-
-
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            val userBookToDelete =
-                                UserBook(username = username, bookId = myBook.bookId)
-                            userBookDao.delete(userBookToDelete)
-                            snackbarHostState.showSnackbar("${myBook.title} removed from library")
-                            onBookRemoved()
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Remove Book")
-                }
-
 
                 Column {
                     Row(
@@ -236,6 +146,96 @@ fun BookDetailScreen(
                         maxLines = if (expanded) Int.MAX_VALUE else 2,
                         overflow = if (expanded) TextOverflow.Visible else TextOverflow.Ellipsis
                     )
+
+
+
+                    if (userReview?.reviewtext.isNullOrBlank()) {
+                        Text(text = "You haven't written a review yet.")
+                    } else {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = "Your Review:",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Text(
+                                text = userReview!!.reviewtext!!,
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier.padding(top = 4.dp)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+
+                    OutlinedTextField(
+                        value = currentReviewText,
+                        onValueChange = { currentReviewText = it },
+                        label = { Text("Write/update your review") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text("Your Rating")
+                    RatingBar(
+                        rating = currentRating.toFloatOrNull() ?: 0f,
+                        onRatingChanged = { newRating ->
+                            currentRating = newRating.toString()
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                // If no rating value = 0
+                                val ratingValue = currentRating.toFloatOrNull() ?: 0f
+
+                                val reviewToSave = userReview?.copy(
+                                    rating = ratingValue,
+                                    reviewtext = currentReviewText
+                                ) ?: Review(
+                                    username = username,
+                                    bookId = bookId,
+                                    rating = ratingValue,
+                                    reviewtext = currentReviewText
+                                )
+
+                                reviewDao.insert(reviewToSave)
+
+                                // Refresh the userReview state to show the saved rating
+                                userReview = reviewDao.getReviewByUserAndBook(bookId, username)
+                                snackbarHostState.showSnackbar("Rating saved!")
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Save")
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+
+
+
+
+
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                val userBookToDelete =
+                                    UserBook(username = username, bookId = myBook.bookId)
+                                userBookDao.delete(userBookToDelete)
+                                snackbarHostState.showSnackbar("${myBook.title} removed from library")
+                                onBookRemoved()
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Remove Book")
+                    }
+
+
                 }
             }
         }
@@ -245,6 +245,7 @@ fun BookDetailScreen(
         )
     }
 }
+
 
 
 @Composable
