@@ -147,10 +147,20 @@ fun BookDetailScreen(
                         overflow = if (expanded) TextOverflow.Visible else TextOverflow.Ellipsis
                     )
 
+                    Spacer(modifier = Modifier.height(25.dp))
+
 
 
                     if (userReview?.reviewtext.isNullOrBlank()) {
-                        Text(text = "You haven't written a review yet.")
+                        Text(
+                            text = "Your Review:",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            text = "You haven't written a review yet.",
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(top = 4.dp)
+                            )
                     } else {
                         Column(modifier = Modifier.fillMaxWidth()) {
                             Text(
@@ -176,7 +186,10 @@ fun BookDetailScreen(
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text("Your Rating")
+                    Text(
+                        "Your Rating:",
+                        style = MaterialTheme.typography.titleMedium
+                    )
                     RatingBar(
                         rating = currentRating.toFloatOrNull() ?: 0f,
                         onRatingChanged = { newRating ->
