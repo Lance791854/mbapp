@@ -78,7 +78,8 @@ fun AuthScreen(
             composable(Destination.DASHBOARD.route) {
                 currentUser?. let { username ->
                     DashboardScreen(
-                        username = username
+                        username = username,
+                        userBookDao = userBookDao
                     )
                 }
             }
