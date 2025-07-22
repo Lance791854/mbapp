@@ -1,6 +1,7 @@
 package com.example.unibookapp
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,21 +22,39 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.unibookapp.data.Book
+import com.example.unibookapp.data.BookDao
 import com.example.unibookapp.data.UserBook
 import com.example.unibookapp.data.UserBookDao
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
+import coil.compose.AsyncImage
 
 
 @Composable
 fun DashboardScreen(
     username: String,
     userBookDao: UserBookDao,
+    bookDao: BookDao,
+    onBookClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
     var userBooks by remember { mutableStateOf<List<UserBook>>(emptyList()) }
+    var currentlyReadingBook by remember { mutableStateOf<Book?>(null) }
 
     LaunchedEffect(username) {
         userBooks = userBookDao.getBooksByUser(username)
+
+        val readingBooks = userBooks.filter { it.readingStatus == "reading" }
+        if (readingBooks.isNotEmpty()) {
+            val randomReadingUserBook = readingBooks.random()
+            currentlyReadingBook = bookDao.getBookById(randomReadingUserBook.bookId)
+        }
     }
 
     val booksRead = userBooks.count { it.readingStatus == "read" }
@@ -75,7 +94,7 @@ fun DashboardScreen(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
+                .weight(2f),
             border = BorderStroke(1.dp, Color.Black)
 
         ) {
@@ -139,8 +158,67 @@ fun DashboardScreen(
                     textAlign = TextAlign.Center
                 )
             }
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
 
 
+        currentlyReadingBook?.let { book ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .clickable { onBookClick(book.bookId) },
+                border = BorderStroke(1.dp, Color.Black)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Currently Reading",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        AsyncImage(
+                            model = book.coverUrl,
+                            contentDescription = "Book Cover",
+                            modifier = Modifier.size(60.dp, 80.dp),
+                            contentScale = ContentScale.Crop,
+                            placeholder = painterResource(R.drawable.landscape_placeholder),
+                            error = painterResource(R.drawable.landscape_placeholder)
+                        )
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(
+                                text = book.title,
+                                style = MaterialTheme.typography.titleMedium,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = book.author,
+                                style = MaterialTheme.typography.bodySmall,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+
+
+                        }
+                    }
+                }
+            }
         }
     }
 }
