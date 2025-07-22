@@ -79,7 +79,9 @@ fun AuthScreen(
                 currentUser?. let { username ->
                     DashboardScreen(
                         username = username,
-                        userBookDao = userBookDao
+                        userBookDao = userBookDao,
+                        bookDao = bookDao,
+                        onBookClick = { bookId -> navController.navigate("bookDetail/$bookId") }
                     )
                 }
             }
