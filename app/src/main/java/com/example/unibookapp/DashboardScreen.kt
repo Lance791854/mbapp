@@ -75,7 +75,7 @@ fun DashboardScreen(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(2f),
+                .weight(1f),
             border = BorderStroke(1.dp, Color.Black)
 
         ) {
@@ -87,22 +87,31 @@ fun DashboardScreen(
             ) {
                 Text(text = "My activity", style = MaterialTheme.typography.titleLarge)
 
+                Spacer(modifier = Modifier.height(24.dp))
+
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = "Books read = $booksRead", style = MaterialTheme.typography.bodyLarge)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Currently reading = $reading",
+                    text = "Books your current reading = $reading",
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Want to read = $wantToRead",
+                    text = "Books you want to read = $wantToRead",
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = "Total books = $totalBooks",
                     style = MaterialTheme.typography.bodyLarge
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = if (totalBooks > 0) "Keep up the great work!" else "Start your reading journey!",
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center
                 )
             }
         }
