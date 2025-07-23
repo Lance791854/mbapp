@@ -135,7 +135,7 @@ fun DashboardScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
 
         Card(
@@ -160,7 +160,7 @@ fun DashboardScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
 
         currentlyReadingBook?.let { book ->
