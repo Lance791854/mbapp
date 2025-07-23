@@ -7,11 +7,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.unibookapp.data.UniBookDatabase
 import com.example.unibookapp.ui.theme.UniBookAppTheme
+import com.example.unibookapp.viewmodel.ThemeViewModel
 import com.example.unibookapp.viewmodel.UserViewModel
+import androidx.compose.runtime.getValue
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +29,10 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            UniBookAppTheme {
+            val themeViewModel: ThemeViewModel = viewModel()
+            val isDarkMode by themeViewModel.isDarkMode.collectAsState()
+
+            UniBookAppTheme(darkModeOverride = isDarkMode) {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val userViewModel: UserViewModel = viewModel()
                     AuthScreen(
@@ -34,6 +41,7 @@ class MainActivity : ComponentActivity() {
                         userBookDao = userBookDao,
                         userViewModel = userViewModel,
                         reviewDao = reviewDao,
+                        themeViewModel = themeViewModel,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

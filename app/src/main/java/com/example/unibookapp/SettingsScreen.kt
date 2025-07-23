@@ -1,10 +1,16 @@
 package com.example.unibookapp
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,6 +23,8 @@ import com.example.unibookapp.ui.theme.UniBookAppTheme
 
 @Composable
 fun SettingsScreen(
+    isDarkMode: Boolean?,
+    onThemeChange: (Boolean?) -> Unit,
     onLogoutClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -33,14 +41,31 @@ fun SettingsScreen(
             color = Color.Blue,
             modifier = Modifier.clickable { onLogoutClick() }
         )
+
+
+    }
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        border = BorderStroke(1.dp, Color.Black)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Dark Mode",
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            Switch(
+                checked = isDarkMode == true,
+                onCheckedChange = { onThemeChange(it) }
+            )
+        }
     }
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun SettingsPreview() {
-    UniBookAppTheme {
-//        SettingsScreen()
-    }
-}

@@ -30,6 +30,7 @@ import com.example.unibookapp.data.ReviewDao
 import com.example.unibookapp.data.User
 import com.example.unibookapp.data.UserBookDao
 import com.example.unibookapp.data.UserDao
+import com.example.unibookapp.viewmodel.ThemeViewModel
 import kotlinx.coroutines.launch
 import com.example.unibookapp.viewmodel.UserViewModel
 
@@ -42,10 +43,12 @@ fun AuthScreen(
     userBookDao: UserBookDao,
     reviewDao: ReviewDao,
     userViewModel: UserViewModel,
+    themeViewModel: ThemeViewModel,
     modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val currentUser by userViewModel.currentUser.collectAsState()
     val startDestination = if (currentUser != null) Destination.DASHBOARD.route else "login"
+    val isDarkMode by themeViewModel.isDarkMode.collectAsState()
 
 
     Scaffold(
@@ -124,6 +127,8 @@ fun AuthScreen(
             }
             composable(Destination.SETTINGS.route) {
                 SettingsScreen(
+                    isDarkMode = isDarkMode,
+                    onThemeChange = { themeViewModel.setDarkMode(it) },
                     onLogoutClick = {
                         userViewModel.logout()
                         navController.navigate("login")
