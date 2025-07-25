@@ -2,6 +2,7 @@ package com.example.unibookapp
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -51,8 +53,6 @@ import com.example.unibookapp.data.ReviewDao
 import com.example.unibookapp.data.UserBook
 import com.example.unibookapp.data.UserBookDao
 import kotlinx.coroutines.launch
-import androidx.compose.foundation.layout.Arrangement
-
 
 
 @Composable
@@ -162,11 +162,11 @@ fun BookDetailScreen(
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         val statuses = listOf("Want to Read", "Reading", "Read")
-                        statuses.forEach { status ->
+                        statuses.forEachIndexed { index, status ->
                             val dbStatus = status.replace(" ", "_").lowercase()
                             Button(
                                 onClick = {
@@ -176,7 +176,7 @@ fun BookDetailScreen(
                                         snackbarHostState.showSnackbar("Status: $status")
                                     }
                                 },
-                                modifier = Modifier.weight(1f),
+//                                modifier = Modifier.weight(1f),
                                 colors = if (readingStatus == dbStatus) {
                                     ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                                 } else {
@@ -184,6 +184,10 @@ fun BookDetailScreen(
                                 }
                             ) {
                                 Text(status)
+                            }
+                            // Add spacing between buttons except last one
+                            if (index < statuses.size - 1) {
+                                Spacer(modifier = Modifier.width(8.dp))
                             }
                         }
                     }
@@ -307,7 +311,11 @@ fun RatingBar(
     rating: Float,
     onRatingChanged: (Float) -> Unit
 ) {
-    Row(modifier = modifier) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
         for (i in 1..5) {
             val isFullStar = rating >= i
             val isHalfStar = rating >= i - 0.5f && !isFullStar
