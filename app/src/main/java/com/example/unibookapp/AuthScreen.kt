@@ -13,15 +13,19 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.unibookapp.ui.theme.UniBookAppTheme
-import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.*
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -30,10 +34,10 @@ import com.example.unibookapp.data.ReviewDao
 import com.example.unibookapp.data.User
 import com.example.unibookapp.data.UserBookDao
 import com.example.unibookapp.data.UserDao
+import com.example.unibookapp.ui.theme.UniBookAppTheme
 import com.example.unibookapp.viewmodel.ThemeViewModel
-import kotlinx.coroutines.launch
 import com.example.unibookapp.viewmodel.UserViewModel
-
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -123,7 +127,13 @@ fun AuthScreen(
                 }
             }
             composable(Destination.PROFILE.route) {
-                ProfileScreen()
+                currentUser?. let { username ->
+                    ProfileScreen(
+                        reviewDao = reviewDao,
+                        userBookDao = userBookDao,
+                        username = username
+                    )
+                }
             }
             composable(Destination.SETTINGS.route) {
                 SettingsScreen(
