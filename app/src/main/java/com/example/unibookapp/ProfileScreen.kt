@@ -33,19 +33,25 @@ fun ProfileScreen(
     reviewDao: ReviewDao,
     modifier: Modifier = Modifier
 ) {
+
+    var userBooks by remember { mutableStateOf<List<UserBook>>(emptyList()) }
+
+    LaunchedEffect(username) {
+        userBooks = userBookDao.getBooksByUser(username)
+    }
+
+    val booksRead = userBooks.count { it.readingStatus == "read" }
+    val reading = userBooks.count { it.readingStatus == "reading" }
+    val wantToRead = userBooks.count { it.readingStatus == "want_to_read" }
+    val totalBooks = booksRead + reading + wantToRead
+
     Column(
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment  = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-
-        var userBooks by remember { mutableStateOf<List<UserBook>>(emptyList()) }
-
-        LaunchedEffect(username) {
-            userBooks = userBookDao.getBooksByUser(username)
-        }
 
 
         Text(text = "Profile", style = MaterialTheme.typography.displaySmall)
@@ -57,12 +63,66 @@ fun ProfileScreen(
             border = BorderStroke(1.dp, Color.Black)
         ) {
             Text(
-                text = username,
+                text = "@$username",
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(16.dp),
                 textAlign = TextAlign.Center
             )
         }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            border = BorderStroke(1.dp, Color.Black)
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(text = "Reading Statistics", style = MaterialTheme.typography.titleLarge)
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(text = "Books read: $booksRead", style = MaterialTheme.typography.bodyLarge)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Currently reading: $reading",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Want to read: $wantToRead", style = MaterialTheme.typography.bodyLarge)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Total books: $totalBooks", style = MaterialTheme.typography.bodyLarge)
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            border = BorderStroke(1.dp, Color.Black)
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(text = "Account Info", style = MaterialTheme.typography.titleLarge)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                val firstBookDate = userBooks.minByOrNull { it.datePosted }?.datePosted
+                val daysSinceJoined = if (firstBookDate != null) {
+                    ((System.currentTimeMillis() - firstBookDate) / (1000 * 60 * 60 * 24)).toInt()
+                } else 0
+
+                Text(text = "Member for: $daysSinceJoined days", style = MaterialTheme.typography.bodyLarge)
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
 
 
 
