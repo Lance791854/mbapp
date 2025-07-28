@@ -103,4 +103,18 @@ class AuthScreenTest {
         composeTestRule.onNodeWithText("Reading Statistics").assertIsDisplayed()
         composeTestRule.onNodeWithText("Books read: 0").assertIsDisplayed()
     }
+
+    @Test
+    fun testDarkModeToggleInteraction() {
+        composeTestRule.setContent {
+            UniBookAppTheme {
+                SettingsScreen(
+                    isDarkMode = false,
+                    onThemeChange = { /* Nothing */ },
+                    onLogoutClick = { /* Nothing */ }
+                )
+            }
+        }
+        composeTestRule.onNodeWithText("Dark Mode").performClick()
+    }
 }
