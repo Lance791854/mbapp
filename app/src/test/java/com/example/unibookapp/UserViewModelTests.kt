@@ -1,5 +1,6 @@
 package com.example.unibookapp
 
+import com.example.unibookapp.viewmodel.ThemeViewModel
 import com.example.unibookapp.viewmodel.UserViewModel
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -39,5 +40,16 @@ class UserViewModelTest {
         // Then the currentUser state should be null
         val result = viewModel.currentUser.value
         assertNull(result)
+    }
+
+    @Test
+    fun setDarkMode() {
+        val themeViewModel = ThemeViewModel()
+
+        themeViewModel.setDarkMode(true)
+        assertEquals(true, themeViewModel.isDarkMode.value)
+
+        themeViewModel.setDarkMode(false)
+        assertEquals(false, themeViewModel.isDarkMode.value)
     }
 }
